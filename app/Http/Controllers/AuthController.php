@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -39,11 +40,32 @@ class AuthController extends Controller
             'bio' => $request->bio,
             'profile_photo' => $profilePhotoPath ,
         ]);
+        event(new Registered($user));
         Auth::login($user);
-        return redirect()->route('dashboard');
+        return redirect()->route('verification.notice');
     }
 
-    public function login(){
+    public function ShowloginForm(){
         return view('auth.login');
+    }
+
+    public function login(Request $request){
+        $data = $request->validate([
+            'email'    => 'required|email',
+            'password' => 'required'
+        ]);
+
+        if(Auth::attempt($data)){
+            return redirect()->route('home');
+        }
+        return back()->withErrors([
+            'email'    => 'Please Check you\'re email again',
+            'password' => 'You\'re password seems to be incorrect'
+        ]);
+    }
+
+    public function Logout(Request $request){
+        Auth::logout();
+        return redirect()->route('login.form')->with('success','You have logged out 😁👌');
     }
 }
