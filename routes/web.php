@@ -4,7 +4,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HomeController;
 use App\Models\User;
+use App\Http\Controllers\FriendRequestController;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\ProfileController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -17,10 +19,11 @@ use Illuminate\Support\Facades\Auth;
 */
 Auth::routes(['verify' => true]);
 
-// Add the view for the login page which is going to be the index page for the user
+
 Route::get('/login',[AuthController::class , 'ShowloginForm'])->name('login.form');
+Route::get('/register',[AuthController::class , 'ShowRegisterForm'])->name('register.form');
+Route::get('', [HomeController::class , 'index'])->middleware(['auth','verified'])->name('home');
+Route::get('/profile',[ProfileController::class, "index"])->middleware('auth','verified')->name('profile');
 Route::post('/login',[AuthController::class , 'login'])->name('login');
 Route::post('/logout',[AuthController::class, 'Logout'])->name('logout');
-Route::get('/register',[AuthController::class , 'ShowRegisterForm'])->name('register.form');
 Route::post('/register',[AuthController::class , 'register'])->name('register');
-Route::get('', [HomeController::class , 'index'])->middleware(['auth','verified'])->name('home');
