@@ -6,5 +6,7 @@ use Illuminate\Http\Request;
 
 class FriendListController extends Controller
 {
-    //
+    public function AddFriend(){
+        return;
+    }
 }

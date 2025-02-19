@@ -24,6 +24,7 @@ Route::get('/login',[AuthController::class , 'ShowloginForm'])->name('login.form
 Route::get('/register',[AuthController::class , 'ShowRegisterForm'])->name('register.form');
 Route::get('', [HomeController::class , 'index'])->middleware(['auth','verified'])->name('home');
 Route::get('/profile',[ProfileController::class, "index"])->middleware('auth','verified')->name('profile');
+Route::get('/profile/{id}', [ProfileController::class , 'ShowOtherProfile'])->where('id','[0-9]+');
 
 Route::post('/login',[AuthController::class , 'login'])->name('login');
 Route::post('/logout',[AuthController::class, 'Logout'])->name('logout');

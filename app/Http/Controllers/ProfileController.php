@@ -63,4 +63,11 @@ class ProfileController extends Controller
         $user = Auth::user();
         return view('vibe.update', compact('user'));
     }
+
+    public function ShowOtherProfile($id){
+        // get the id
+        $user = User::findOrFail($id);
+        dump($user);
+        return view('vibe.otherprofile', compact('user'));
+    }
 }
