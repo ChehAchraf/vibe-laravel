@@ -1,5 +1,4 @@
 @extends('layouts.app')
-
 <nav class="gradient-bg shadow-lg">
     <div class="max-w-7xl mx-auto px-4">
         <div class="flex justify-between items-center h-16">
@@ -19,6 +18,11 @@
             <div class="hidden md:flex flex-1 max-w-md px-6">
                 <div class="relative w-full">
                     <input type="text"
+                            name="search"
+                            hx-get="/profile/search"
+                            hx-trigger="keyup changed delay:300ms" 
+                            hx-target="#user-results"
+                            hx-indicator=".htmx-indicator"
                            class="w-full px-4 py-2 rounded-full bg-white/20 border border-white/30 text-white placeholder-white/70 focus:ring-2 focus:ring-white/50 focus:outline-none"
                            placeholder="Search users by nickname or email...">
                     <svg class="w-5 h-5 absolute right-3 top-2.5 text-white/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -98,52 +102,12 @@
         </div>
     </div>
 </nav>
- <!-- Main Content -->
-<main class="max-w-7xl mx-auto px-4 py-8">
-    <!-- Profile Section -->
-    <div class="bg-white rounded-xl shadow-lg p-6 mb-8 hover-scale">
-        <div class="flex items-center space-x-6">
-            <div class="relative group">
-                <img class="h-28 w-28 rounded-full object-cover ring-4 ring-indigo-100" src="https://i.pravatar.cc/150?img=4" alt="Profile">
-                <div class="absolute inset-0 rounded-full bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center">
-                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/>
-                    </svg>
-                </div>
-            </div>
-            <div>
-                <h1 class="text-3xl font-bold text-gray-900">{{$user->name}}</h1>
-                <p class="text-indigo-600 font-medium">{{$user->nickname}}</p>
-                <p class="text-gray-600 mt-2 max-w-xl">
-                    @isset($user->bio)
 
-                    @endisset
-                </p>
-            </div>
-            <a href="{{route('profile.edit')}}" class="ml-auto bg-indigo-600 text-white px-6 py-2.5 rounded-lg hover:bg-indigo-700 transform transition hover:-translate-y-0.5 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-                Edit Profile
-            </a>
-        </div>
+<main>
+    <div class="m-3 flex justify-center">
+        <p class="htmx-indicator">Searching for users 🔬...</p>
     </div>
+    <div id="user-results"  class=" grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
-    <!-- Friends Section -->
-    <h2 class="text-2xl font-bold text-gray-900 mb-6">Friends</h2>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <!-- Friend Card -->
-        @foreach ($allusers as $friend)
-        <div class="bg-white rounded-xl shadow-lg p-5 hover-scale">
-            <div class="flex items-center space-x-4">
-                <img class="h-14 w-14 rounded-full object-cover ring-2 ring-indigo-100" src="https://i.pravatar.cc/150?img=5" alt="Friend">
-                <div>
-                    <a href="{{ route('profile.show', ['id' => $friend->id]) }}" class="font-semibold text-gray-900">{{$friend->name}}</a>
-                    <p class="text-indigo-600 text-sm">@janesmith</p>
-                </div>
-                <button class="ml-auto text-indigo-600 hover:text-indigo-800 font-medium">
-                    Remove
-                </button>
-            </div>
-        </div>
-        @endforeach
     </div>
 </main>

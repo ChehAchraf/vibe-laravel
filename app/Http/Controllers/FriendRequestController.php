@@ -37,7 +37,6 @@ class FriendRequestController extends Controller
 
         return back()->with('success', 'Accepted ! 😁😍');
     }
-
     public function declineRequest($request_id)
     {
         $request = FriendRequest::where('id', $request_id)
@@ -63,11 +62,11 @@ class FriendRequestController extends Controller
     }
     public function receivedRequests()
     {
-
         $requests = FriendRequest::where('receiver_id', Auth::id())
             ->where('status', 'pending')
             ->with('sender')
             ->get();
-        return view('vibe.profile', compact('requests'));
+//        dd($requests);
+        return view('vibe.requests', compact('requests'));
     }
 }

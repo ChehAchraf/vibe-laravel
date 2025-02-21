@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sarah Johnson - Vibe</title>
+    <title>{{$user->name}} - Vibe</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <style>
@@ -38,35 +38,38 @@
                 </div>
                 <!-- Profile Info -->
                 <div class="mb-4">
-                    <h1 class="text-2xl font-bold text-gray-900">Sarah Johnson</h1>
-                    <p class="text-indigo-600">@sarahj</p>
+                    <h1 class="text-2xl font-bold text-gray-900">{{$user->name}}</h1>
+                    <p class="text-indigo-600"><span>@</span>{{$user->nickname}}</p>
                 </div>
             </div>
             <!-- Friend Request Button -->
             <div class="absolute bottom-4 right-8 flex space-x-3">
                 <!-- Friend Status Button - Can be one of these states -->
-                <button class="px-6 py-2.5 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700
+                <form method="post" action="{{ route('send.request', ['receiver_id' => $user->id]) }}">
+                    @csrf
+                    <button type="submit" class="px-6 py-2.5 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700
                                  transition shadow-md font-medium flex items-center space-x-2">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                              d="M12 4v16m8-8H4"/>
-                    </svg>
-                    <span>Add Friend</span>
-                </button>
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M12 4v16m8-8H4"/>
+                        </svg>
+                        <span>Add Friend</span>
+                    </button>
+                </form>
                 <!-- OR -->
-                <!-- <button class="px-6 py-2.5 rounded-lg bg-gray-200 text-gray-700 cursor-default
+                <button class="px-6 py-2.5 rounded-lg bg-gray-200 text-gray-700 cursor-default
                              shadow-md font-medium">
                     Request Sent
-                </button> -->
+                </button>
                 <!-- OR -->
-                <!-- <button class="px-6 py-2.5 rounded-lg bg-green-600 text-white cursor-default
+                <button class="px-6 py-2.5 rounded-lg bg-green-600 text-white cursor-default
                              shadow-md font-medium flex items-center space-x-2">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                               d="M5 13l4 4L19 7"/>
                     </svg>
                     <span>Friends</span>
-                </button> -->
+                </button>
 
                 <!-- Message Button -->
                 <button class="px-6 py-2.5 rounded-lg bg-white text-indigo-600 hover:bg-indigo-50
@@ -91,15 +94,20 @@
             <div class="bg-white rounded-xl shadow-md p-6">
                 <h2 class="text-xl font-semibold text-gray-900 mb-4">About</h2>
                 <div class="space-y-4">
-                    <p class="text-gray-600">UI/UX Designer passionate about creating beautiful and intuitive user
-                        experiences. Love to collaborate with creative minds.</p>
+                    <p class="text-gray-600">
+                        @if($user->bio)
+
+                        @else
+                            This user has no bio yet 😒
+                        @endif
+                    </p>
                     <div class="border-t pt-4">
                         <div class="flex items-center space-x-2 text-gray-600">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                       d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                             </svg>
-                            <span>Joined January 2024</span>
+                            <span>Joined {{$user->created_at}}</span>
                         </div>
                     </div>
                 </div>
