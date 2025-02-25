@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use App\Models\FriendRequest;
+use App\Models\FriendList;
 
 class ProfileController extends Controller
 {
@@ -13,12 +15,20 @@ class ProfileController extends Controller
     {
         $user = Auth::user();
         $userid = Auth::id();
-        $friend_list = DB::table('users')
-            ->join('friend_requests as fr1', "fr1.sender_id" ,"=","users.id")
-            ->join('friend_requests as fr2' , 'fr2.receiver_id' , "=" , 'users.id')
-            ->where('fr2.receiver_id',$userid)
-            ->first();
-        return view('vibe.profile', compact('user','friend_list'));
+        
+        $pending_requests = FriendRequest::where('receiver_id', $userid)
+            ->where('status', 'pending')
+            ->with('sender')
+            ->get();
+
+        $friend_list = FriendRequest::where(function($query) use ($userid) {
+                $query->where('sender_id', $userid)
+                      ->orWhere('receiver_id', $userid);
+            })
+            ->where('status', 'accepted')
+            ->get();
+
+        return view('vibe.profile', compact('user', 'pending_requests', 'friend_list'));
     }
 
     public function ProfileEdit(Request $request)
@@ -67,7 +77,21 @@ class ProfileController extends Controller
     public function ShowOtherProfile($id){
         // get the id
         $user = User::findOrFail($id);
-        dump($user);
-        return view('vibe.otherprofile', compact('user'));
+    
+        // المستخدم المصادق
+        $authUser = auth()->id();
+    
+        // تحقق واش الطلب مرسل
+        $CheckIfRequestSent = FriendRequest::where('sender_id', $authUser)
+            ->where('receiver_id', $id)
+            ->where('status', 'pending')
+            ->exists();
+    
+        // تحقق واش الطلب مقبول
+        $CheckIfRequestaccepted = FriendRequest::where('sender_id', $authUser)
+            ->where('receiver_id', $id)
+            ->first(); // ممكن يكون `null`
+    
+        return view('vibe.otherprofile', compact('user', 'CheckIfRequestSent', 'CheckIfRequestaccepted'));
     }
 }

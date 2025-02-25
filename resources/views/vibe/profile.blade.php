@@ -113,48 +113,63 @@
                     <h2 class="text-xl font-semibold text-gray-900">Friends</h2>
                     <a href="#" class="text-indigo-600 hover:text-indigo-700 font-medium">View All</a>
                 </div>
-                @if($friend_list)
+                @if($friend_list && $friend_list->count() > 0)
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="flex items-center space-x-4 p-4 rounded-lg hover:bg-gray-50 transition">
-                            <img src="https://i.pravatar.cc/150?img=1"
-                                 alt="Friend"
-                                 class="w-12 h-12 rounded-full object-cover">
-                            <div class="flex-1">
-                                <h3 class="font-semibold text-gray-900">Sarah Johnson</h3>
-                                <p class="text-gray-600 text-sm">@sarahj</p>
+                        @foreach($friend_list as $friend)
+                            <div class="flex items-center space-x-4 p-4 rounded-lg hover:bg-gray-50 transition">
+                                <img src="https://i.pravatar.cc/150?img=1"
+                                     alt="Friend"
+                                     class="w-12 h-12 rounded-full object-cover">
+                                <div class="flex-1">
+                                    <h3 class="font-semibold text-gray-900">Sarah Johnson</h3>
+                                    <p class="text-gray-600 text-sm">@sarahj</p>
+                                </div>
+                                <button class="text-gray-400 hover:text-red-500 transition">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                              d="M6 18L18 6M6 6l12 12"/>
+                                    </svg>
+                                </button>
                             </div>
-                            <button class="text-gray-400 hover:text-red-500 transition">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                          d="M6 18L18 6M6 6l12 12"/>
-                                </svg>
-                            </button>
-                        </div>
+                        @endforeach
                     </div>
                 @else
-                    <p>sorry 😢 but you don't have any friend's yet, try to add them please 😍</p>
+                    <p class="text-center text-gray-500">You don't have any friends yet 😢</p>
                 @endif
-
             </div>
 
             <div class="bg-white rounded-xl shadow-md p-6 mt-6">
                 <h2 class="text-xl font-semibold text-gray-900 mb-6">Pending Friend Requests</h2>
                 <div class="space-y-4">
-                    <div class="flex items-center space-x-4 p-4 rounded-lg bg-gray-50">
-                        <img src="https://i.pravatar.cc/150?img=5"
-                             alt="User"
-                             class="w-12 h-12 rounded-full object-cover">
-                        <div class="flex-1">
-                            <h3 class="font-semibold text-gray-900">Mike Wilson</h3>
-                            <p class="text-gray-600 text-sm">@mikew</p>
-                        </div>
-                        <div class="flex items-center space-x-2">
-                            <button class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700
-                                             transition text-sm">Accept</button>
-                            <button class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50
-                                             transition text-sm">Decline</button>
-                        </div>
-                    </div>
+                    @if($pending_requests->count() > 0)
+                        @foreach($pending_requests as $request)
+                            <div class="flex items-center space-x-4 p-4 rounded-lg bg-gray-50">
+                                <img src="{{ $request->sender->profile_photo ? Storage::url($request->sender->profile_photo) : 'https://i.pravatar.cc/150?img=5' }}"
+                                     alt="User"
+                                     class="w-12 h-12 rounded-full object-cover">
+                                <div class="flex-1">
+                                    <h3 class="font-semibold text-gray-900">{{ $request->sender->name }}</h3>
+                                    <p class="text-gray-600 text-sm">{{'@' . $request->sender->nickname }}</p>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <form action="{{ route('friend.accept', $request->id) }}" method="POST" class="inline">
+                                        @csrf
+                                        <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition text-sm">
+                                            Accept
+                                        </button>
+                                    </form>
+                                    <form action="{{ route('friend.decline', $request->id) }}" method="POST" class="inline">
+                                        @csrf
+                                        <button type="submit" class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition text-sm">
+                                            Decline
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        @endforeach
+                    @else
+                        <p class="text-center text-gray-500">No pending friend requests</p>
+                    @endif
                 </div>
             </div>
         </div>

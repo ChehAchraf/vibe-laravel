@@ -45,32 +45,33 @@
             <!-- Friend Request Button -->
             <div class="absolute bottom-4 right-8 flex space-x-3">
                 <!-- Friend Status Button - Can be one of these states -->
+                @if (!$CheckIfRequestSent)
                 <form method="post" action="{{ route('send.request', ['receiver_id' => $user->id]) }}">
                     @csrf
                     <button type="submit" class="px-6 py-2.5 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700
-                                 transition shadow-md font-medium flex items-center space-x-2">
+                             transition shadow-md font-medium flex items-center space-x-2">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                  d="M12 4v16m8-8H4"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                         </svg>
                         <span>Add Friend</span>
                     </button>
                 </form>
-                <!-- OR -->
-                <button class="px-6 py-2.5 rounded-lg bg-gray-200 text-gray-700 cursor-default
-                             shadow-md font-medium">
-                    Request Sent
-                </button>
-                <!-- OR -->
-                <button class="px-6 py-2.5 rounded-lg bg-green-600 text-white cursor-default
-                             shadow-md font-medium flex items-center space-x-2">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                              d="M5 13l4 4L19 7"/>
-                    </svg>
-                    <span>Friends</span>
-                </button>
-
+            @else
+                @if (optional($CheckIfRequestaccepted)->status == 'accepted')
+                    <button class="px-6 py-2.5 rounded-lg bg-green-600 text-white cursor-default shadow-md font-medium flex items-center space-x-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                        </svg>
+                        <span>Friends</span>
+                    </button>
+                @else
+                    <button class="px-6 py-2.5 rounded-lg bg-gray-200 text-gray-700 cursor-default shadow-md font-medium">
+                        Request Sent
+                    </button>
+                @endif
+            @endif
+                
+                
                 <!-- Message Button -->
                 <button class="px-6 py-2.5 rounded-lg bg-white text-indigo-600 hover:bg-indigo-50
                                  transition shadow-md font-medium flex items-center space-x-2">
